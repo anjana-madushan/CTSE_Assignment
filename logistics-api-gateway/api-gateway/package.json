@@ -3,7 +3,15 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "types": [
+    "node"
+  ],
+  "typeRoots": [
+    "../node_modules/@types"
+  ],
   "scripts": {
+    "start": "node server.ts",
+    "dev": "nodemon server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Nowen, Anjana, Pasan & Priyantha",
@@ -11,6 +19,20 @@
   "dependencies": {
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.6",
-    "bcrypt-ts": "^5.0.2"
+    "bcrypt-ts": "^5.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "fast-gateway": "^3.4.6",
+    "helmet": "^7.1.0",
+    "http-proxy-middleware": "^3.0.0",
+    "morgan": "^1.10.0",
+    "ts-node": "^10.9.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^20.12.6",
+    "nodemon": "^3.1.0"
   }
 }
