@@ -23,7 +23,6 @@ export const createLogisticOrder = async (req: any, res: any): Promise<any> => {
   }
 
   if (!LogisticDTO.orderName) {
-    console.log("order", LogisticDTO.orderName);
     return res.status(400).json({ message: "Order name is required" });
   }
   if (!LogisticDTO.orderDescription) {

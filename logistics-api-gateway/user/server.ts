@@ -6,18 +6,20 @@ import https from "https";
 import fs from "fs";
 import bodyParser from 'body-parser';
 import db from "./db";
-import logisticRouter from "./controller/logistic-controller";
+import userRouter from "./controller/user-controller";
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json())
+app.use(cookieParser());
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World");
 });
-app.use("/logistic", logisticRouter);
+app.use("/user", userRouter);
 
 // Load environment variables
 const PORT: number = parseInt(process.env.PORT!) || 3000;
