@@ -11,3 +11,7 @@ The Collaborators
 >Run Add a .env file and configure the ports and confiigure your mongo db uri
 >>
 >Run npm run dev
+
+#Api Documentation
+>
+>>Postman documentation: https://documenter.getpostman.com/view/29228079/2sA3BgAvMd
