@@ -1,10 +1,17 @@
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import { createProxyMiddleware } from "http-proxy-middleware";
+import axios from "axios";
 
 //TODO: @Pasan - If the hosting plan doesnt support https use certbot to get a free ssl certificate
+
+interface Service {
+  req: any;
+  res: any;
+  next: any;
+}
 
 //Function for custom header
 function addCustomHeader(req: any, _res: any, next: any) {
@@ -16,16 +23,15 @@ const app = express();
 
 // Middleware setup
 app.use(cors());
-app.use(helmet()); 
-app.use(morgan("combined")); 
-app.disable("x-powered-by"); 
+app.use(helmet());
+app.use(morgan("combined"));
+app.disable("x-powered-by");
 app.use(addCustomHeader); // Apply the custom header middleware to the proxy
-
 
 // Define rate limit constants
 //TODO @Pasan - Change the rate limit to based on hosting plan
-const rateLimit = 20; // Max requests per minute
-const interval = 60 * 1000; // Time window in milliseconds (1 minute)
+const rateLimit = 80; // Max requests per minute
+const interval = 60 * 8000; // Time window in milliseconds (8 minute)
 
 // Object to store request counts for each IP address
 const requestCounts: { [key: string]: number } = {};
@@ -73,8 +79,6 @@ function rateLimitAndTimeout(req: any, res: any, next: any) {
 // Apply the rate limit and timeout middleware to the proxy
 app.use(rateLimitAndTimeout);
 
-
-
 // Define routes and corresponding microservices
 const services = [
   {
@@ -89,6 +93,60 @@ const services = [
   },
 ];
 
+// Middleware to check the token
+async function CheckAuth(req: any, res: any, next: any) {
+  const cookie = req.headers.cookie.split(' ')[1];
+  const token = req.headers["x-auth-token"];
+  console.log("cookie",cookie)
+  console.log("token",token)
+  if (cookie) {
+    try {
+      // Send API call to check the token
+      const response = await axios.post(
+        "http://localhost:5040/user/checkToken",
+        { },
+        {
+          headers: {
+              cookie: cookie,
+              "x-forwarded-by": "API-Gateway",
+              "x-auth-token": token,
+
+          }
+      }
+      );
+
+      // If token is valid (status 200), continue to the next middleware
+      if (response.status === 200) {
+        return next();
+      } else {
+        // If token is invalid (status 403), respond with an error
+        return res.status(403).json({
+          code: 403,
+          status: "Error",
+          message: "Token is invalid.",
+          data: null,
+        });
+      }
+    } catch (error) {
+      // console.error(error);
+      // If an error occurs during the API call, respond with an error
+      return res.status(500).json({
+        code: 500,
+        status: "Error",
+        message: "Internal server error.",
+        data: null,
+      });
+    }
+  } else {
+    return res.status(400).json({
+      code: 400,
+      status: "Error",
+      message: "Token is missing.",
+      data: null,
+    });
+}
+}
+
 // Set up proxy middleware for each microservice optional
 services.forEach(({ route, target }) => {
   // Proxy options
@@ -101,7 +159,24 @@ services.forEach(({ route, target }) => {
   };
 
   // Apply rate limiting and timeout middleware before proxying
-  app.use(route, rateLimitAndTimeout, createProxyMiddleware(proxyOptions));
+
+  if (!route.endsWith("/user") ){
+    console.log("route", route.includes("/login"));
+    // If the route doesn't end with /user/login, apply CheckAuth middleware
+    app.use(
+      route,
+      CheckAuth,
+      rateLimitAndTimeout,
+      createProxyMiddleware(proxyOptions)
+    );
+  } else {
+    // If the route ends with /user/login, only apply rate limiting and timeout middleware
+    app.use(
+      route,
+      rateLimitAndTimeout,
+      createProxyMiddleware(proxyOptions)
+    );
+  }
 });
 
 // Handler for route-not-found

@@ -14,7 +14,6 @@ dotenv.config();
 // Middleware function for checking custom header
 const checkCustomHeader = (req: Request, res: Response, next: NextFunction) => {
   const forwardedBy = req.headers["x-forwarded-by"];
-  console.log("Forwarded by: ", forwardedBy);
   if (forwardedBy !== "API-Gateway") {
     return res.status(403).json({
       code: 403,
