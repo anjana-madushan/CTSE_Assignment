@@ -7,5 +7,7 @@ The Collaborators
 >
 #Installatio
 >Run npm i on each service
->>Run Add a .env file and configure the ports and confiigure your mongo db uri 
+>>
+>Run Add a .env file and configure the ports and confiigure your mongo db uri
+>>
 >Run npm run dev
