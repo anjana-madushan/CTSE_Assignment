@@ -5,7 +5,7 @@ The Collaborators
 3. [Hesara Pasan Mahendra](https://github.com/IT21128622)
 4. [Nowen Kottage](https://github.com/KOTTAGENVH)
 >
-#Installatio
+#Installation
 >Run npm i on each service
 >>
 >Run Add a .env file and configure the ports and confiigure your mongo db uri
