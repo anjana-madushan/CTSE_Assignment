@@ -36,15 +36,14 @@ export const signUp = async (req: any, res: any) => {
     existingUser = await User.findOne({ email: email });
   } catch (err) {
     return res.status(500).json({
-      message:
-        "Signing up failed, please try again later.",
+      message: "Signing up failed, please try again later.",
     });
   }
 
   if (existingUser) {
     return res.status(422).json({ message: "User already exists." });
   }
-  
+
   const newUser = new User({
     email,
     password: hashedPassword,
@@ -86,8 +85,8 @@ export const login = async (req: any, res: any) => {
 
   const token = generateToken(loggedInUser._id);
 
-   // Set token as a cookie
-   res.setHeader('Set-Cookie', `token=${token}; HttpOnly`);
+  // Set token as a cookie
+  res.setHeader("Set-Cookie", `token=${token}; HttpOnly`);
 
   return res.status(200).json({ token, user_id: loggedInUser._id });
 };
@@ -103,43 +102,43 @@ export const refreshToken = async (req: any, res: any) => {
 
 // Logout and delete token
 export const logout = (req: any, res: any) => {
-    let userid = req.body.user_id;
-    const cookies = req.headers.cookie;
-  
-    // Check if cookies are present
-    if (!cookies) {
-      return res.status(400).json({ message: "No cookies found" });
+  const token = req.headers["x-auth-token"];
+const header = req.headers
+console.log("header",header)
+  if (!token) {
+    return res.status(400).json({ message: "Token not found in headers" });
+  }
+
+  // Verifying token using secret key from the environmental variables
+  jwt.verify(String(token), process.env.secret as string, (err) => {
+    if (err) {
+      console.log(err);
+      return res.status(403).json({ message: "Authentication failed" }); // If not verified return this error
     }
-  
-    // Extracting token from the cookies
-    const cookieArray = cookies.split("=");
-  
-    // Check if the cookieArray has enough elements
-    if (cookieArray.length < 2) {
-      return res.status(400).json({ message: "Invalid cookie format" });
-    }
-  
-    const previousToken = cookieArray[1];
-  
-    // If token is not found return this response
-    if (!previousToken) {
-      return res.status(400).json({ message: "Couldn't find token" });
-    }
-  
-    // Verifying token using secret key from the environmental variables
-    jwt.verify(String(previousToken), process.env.secret as string, (err) => {
-      if (err) {
-        console.log(err);
-        return res.status(403).json({ message: "Authentication failed" }); // If not verified return this error
-      }
-  
-      // If token is verified return this success message as response
-      res.clearCookie(`${userid}`);
-      req.cookies[`${userid}`] = ""; // <-- Error likely occurring here
-      return res.status(200).json({ message: "Successfully Logged Out" });
-    });
+
+    // Clear the token from headers
+    res.removeHeader("x-auth-token");
+    return res.status(200).json({ message: "Successfully Logged Out" });
+  });
 };
 
-  
+// Check if token is available
+export const checkToken = async (req: any, res: any) => {
+  const token = req.headers["x-auth-token"];
+const header = req.headers
+console.log("header",header)
+  if (!token) {
+    return res.status(400).json({ message: "Token not found in headers" });
+  }
 
-//Oauth login
+  // Verifying token using secret key from the environmental variables
+  jwt.verify(String(token), process.env.secret as string, (err) => {
+    if (err) {
+      console.log(err);
+      return res.status(403).json({ message: "Authentication failed" }); // If not verified return this error
+    }
+
+    // If token is verified return this success message as response
+    return res.status(200).json({ message: "Token is valid" });
+  });
+};
