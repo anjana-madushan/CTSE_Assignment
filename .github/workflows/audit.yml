@@ -7,6 +7,10 @@ on:
 
 jobs:
   audit:
+    strategy:
+      matrix:
+        service: [api-gateway, logistics, user]
+
     runs-on: ubuntu-latest
 
     steps:
@@ -15,6 +19,8 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+        working-directory: logistics-api-gateway/${{ matrix.service }}
 
       - name: Run dependency audit
         run: npm audit
+        working-directory: logistics-api-gateway/${{ matrix.service }}
