@@ -103,8 +103,8 @@ export const refreshToken = async (req: any, res: any) => {
 // Logout and delete token
 export const logout = (req: any, res: any) => {
   const token = req.headers["x-auth-token"];
-const header = req.headers
-console.log("header",header)
+  const header = req.headers
+  console.log("header", header)
   if (!token) {
     return res.status(400).json({ message: "Token not found in headers" });
   }
@@ -125,8 +125,8 @@ console.log("header",header)
 // Check if token is available
 export const checkToken = async (req: any, res: any) => {
   const token = req.headers["x-auth-token"];
-const header = req.headers
-console.log("header",header)
+  const header = req.headers
+  console.log("header", header)
   if (!token) {
     return res.status(400).json({ message: "Token not found in headers" });
   }

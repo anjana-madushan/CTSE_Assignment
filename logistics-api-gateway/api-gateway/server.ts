@@ -94,25 +94,25 @@ const services = [
 ];
 
 // Middleware to check the token
-async function CheckAuth(req: any, res: any, next: any) {
+export async function CheckAuth(req: any, res: any, next: any) {
   const cookie = req.headers.cookie.split(' ')[1];
   const token = req.headers["x-auth-token"];
-  console.log("cookie",cookie)
-  console.log("token",token)
+  console.log("cookie", cookie)
+  console.log("token", token)
   if (cookie) {
     try {
       // Send API call to check the token
       const response = await axios.post(
         "http://localhost:5040/user/checkToken",
-        { },
+        {},
         {
           headers: {
-              cookie: cookie,
-              "x-forwarded-by": "API-Gateway",
-              "x-auth-token": token,
+            cookie: cookie,
+            "x-forwarded-by": "API-Gateway",
+            "x-auth-token": token,
 
           }
-      }
+        }
       );
 
       // If token is valid (status 200), continue to the next middleware
@@ -144,7 +144,7 @@ async function CheckAuth(req: any, res: any, next: any) {
       message: "Token is missing.",
       data: null,
     });
-}
+  }
 }
 
 // Set up proxy middleware for each microservice optional
@@ -160,7 +160,7 @@ services.forEach(({ route, target }) => {
 
   // Apply rate limiting and timeout middleware before proxying
 
-  if (!route.endsWith("/user") ){
+  if (!route.endsWith("/user")) {
     console.log("route", route.includes("/login"));
     // If the route doesn't end with /user/login, apply CheckAuth middleware
     app.use(
