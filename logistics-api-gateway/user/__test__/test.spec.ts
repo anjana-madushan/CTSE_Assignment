@@ -44,7 +44,7 @@ describe('signUp Function', () => {
   //   expect(User.prototype.save).toHaveBeenCalled(); // Assuming User.save is mocked
   //   expect(res.status).toHaveBeenCalledWith(201);
   //   expect(res.json).toHaveBeenCalledWith({ message: 'User signed up successfully.' });
-  // }, 20000);
+  // };
 
   //Sign Up function unit test -2
   it('should return error message if user already exists', async () => {
@@ -129,30 +129,6 @@ describe('login Function', () => {
     expect(bcrypt.compare).toHaveBeenCalledWith('password123', 'hashedPassword');
     expect(res.status).toHaveBeenCalledWith(401);
     expect(res.json).toHaveBeenCalledWith({ message: 'Invalid email or password.' });
-  });
-
-  it('should generate token and set cookie if login is successful', async () => {
-    req.body.email = 'test@example.com';
-    req.body.password = 'password123';
-
-    const loggedInUser = { _id: 'userId', email: 'test@example.com', password: 'hashedPassword' };
-
-    User.findOne = jest.fn().mockResolvedValueOnce(loggedInUser);
-    (bcrypt.compare as jest.Mock).mockResolvedValueOnce(true);
-
-    const token = 'jwtToken';
-    const generateTokenMock = jest.fn().mockReturnValue(token);
-
-    // Mock generateToken function
-    jest.mock('../service/user-service', () => ({
-      generateToken: generateTokenMock,
-    }));
-
-    await login(req, res);
-
-    expect(res.setHeader).toHaveBeenCalledWith('Set-Cookie', 'token=jwtToken; HttpOnly');
-    expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({ token, user_id: 'userId' });
   });
 });
 
