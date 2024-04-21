@@ -1,8 +1,0 @@
-name: logistics_pr_open
-
-on:
-  pull_request_target:
-    types:
-      - opened
-    branches:
-      - main
