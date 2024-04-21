@@ -2,7 +2,7 @@
   "name": "api-gateway",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./src/server.ts",
   "types": [
     "node"
   ],
@@ -10,8 +10,8 @@
     "../node_modules/@types"
   ],
   "scripts": {
-    "start": "node server.ts",
-    "dev": "nodemon server.ts",
+    "start": "node ./src/server.ts",
+    "dev": "nodemon ./src/server.ts",
     "test": "jest"
   },
   "author": "Nowen, Anjana, Pasan & Priyantha",
