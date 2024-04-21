@@ -5,19 +5,15 @@ on:
     types:
       - opened
     branches:
-      - '**'
+      - main
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install dependencies
-        working-directory: ./user
-        run: npm install
-
-      - name: Run unit tests
+      - name: Install dependencies and test
         working-directory: ./user
         run: npm test
