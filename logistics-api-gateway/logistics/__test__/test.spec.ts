@@ -1,6 +1,6 @@
-import { createLogisticOrder, getAllLogisticOrders, getLogisticOrderByID } from '../service/logistic-service';
-import LogisticDTO from '../dto/logistic-dto';
-import Logistic from '../model/logistic-model';
+import { createLogisticOrder, getAllLogisticOrders, getLogisticOrderByID } from '../src/service/logistic-service';
+import LogisticDTO from '../src/dto/logistic-dto';
+import Logistic from '../src/model/logistic-model';
 import mockOrders from '../mockOrders.json';
 
 //Unit test cases for createLogisticOrders
