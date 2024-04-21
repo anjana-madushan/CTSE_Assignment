@@ -26,5 +26,3 @@ jobs:
       - name: Run dependency audit
         working-directory: logistics-api-gateway/${{ matrix.service }}
         run: npm audit
-        
-        
