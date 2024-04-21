@@ -1,0 +1,21 @@
+name: logistic_pr_open
+
+on:
+  pull_request_target:
+    types:
+      - opened
+    branches:
+      - main
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies and test
+        working-directory: logistics-api-gateway/logistics
+        run: |
+          npm install &&
+          npm test
