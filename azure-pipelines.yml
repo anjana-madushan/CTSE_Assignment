@@ -1,0 +1,38 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'Visual Studio Enterprise Subscription – MPN (3fc56fb6-bba9-4b16-9ad6-d8cbe5bd002f)'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      docker build .  -t  SliitAssign.azurece.io/test:tag CTSE_Assignment/logistics-api-gateway
+      az acr login -n SliitAssign
+      docker push SliitAssign.azurece.io/test:tag
+
+- script: cat CTSE_Assignment/
+- task: Kubernetes@1
+  inputs:
+    connectionType: 'Azure Resource Manager'
+    azureSubscriptionEndpoint: 'Visual Studio Enterprise Subscription – MPN (3fc56fb6-bba9-4b16-9ad6-d8cbe5bd002f)'
+    azureResourceGroup: 'Sliit-Assign'
+    kubernetesCluster: 'CTSEAssignment01'
+    namespace: 'default'
+    command: 'apply'
+    useConfigurationFile: true
+    configuration: 'logistics-api-gateway/api-gateway/'
+    secretType: 'dockerRegistry'
+    containerRegistryType: 'Azure Container Registry'
+    azureSubscriptionEndpointForSecrets: 'Visual Studio Enterprise Subscription – MPN (3fc56fb6-bba9-4b16-9ad6-d8cbe5bd002f)'
+    azureContainerRegistry: 'sliitassign.azurecr.io'
+    forceUpdate: false
