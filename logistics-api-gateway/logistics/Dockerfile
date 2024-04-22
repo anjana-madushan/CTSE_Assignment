@@ -55,7 +55,7 @@ RUN npm ci && npm cache clean --force
 USER node
 
 # Expose application port
-EXPOSE 5001
+EXPOSE 5002
 
 # Healthcheck for application
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \

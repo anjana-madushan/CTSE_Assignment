@@ -8,7 +8,7 @@ import morgan from "morgan";
 
 // Load environment variables from .env file
 dotenv.config();
-const PORT = process.env.PORT || 5010;
+const PORT = process.env.PORT || 5001;
 
 import healthCheckRouter from "./healthcheck";
 
