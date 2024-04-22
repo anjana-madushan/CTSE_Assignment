@@ -6,9 +6,6 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends dumb-init \
     && rm -rf /var/lib/apt/lists/*
 
-# Setting 'production' setting for NODE environment
-ENV NODE_ENV production
-
 # Create working directory
 WORKDIR /app
 
@@ -16,10 +13,16 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci --only=production
+RUN npm i
 
 # Copy the rest of the application code
 COPY . .
+
+# Build TypeScript code
+RUN npm run build
+
+# Clean up devDependencies
+RUN npm prune --production
 
 # Change ownership to node user
 RUN chown -R node:node /app
@@ -41,14 +44,18 @@ ENV NODE_ENV production
 # Create app directory
 WORKDIR /app
 
-# Copy from builder stage
-COPY --from=builder --chown=node:node /app .
+# Copy built files from the builder stage
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/package*.json ./
+
+# Install only production dependencies
+RUN npm ci && npm cache clean --force
 
 # Use non-root user
 USER node
 
 # Expose application port
-EXPOSE 3000
+EXPOSE 5001
 
 # Healthcheck for application
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
