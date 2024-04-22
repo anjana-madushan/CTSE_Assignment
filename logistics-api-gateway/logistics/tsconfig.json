@@ -3,9 +3,12 @@
     "target": "es2016",
     "module": "commonjs",
     "esModuleInterop": true,
-    "outDir": "dist",
+    "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "sourceMap": true,
-    "resolveJsonModule": true
-  }
+    "skipLibCheck": true,
+    "outDir": "./dist"
+  },
+  "include": [
+    "src/**/*.ts"
+  ]
 }

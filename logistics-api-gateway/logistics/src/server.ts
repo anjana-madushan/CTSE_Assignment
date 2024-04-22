@@ -7,6 +7,7 @@ import fs from "fs";
 import bodyParser from "body-parser";
 import db from "./db";
 import logisticRouter from "./controller/logistic-controller";
+import healthCheckRouter from "./healthcheck";
 
 dotenv.config();
 
@@ -28,6 +29,9 @@ const checkCustomHeader = (req: Request, res: Response, next: NextFunction) => {
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+
+// Mount the health check router at '/healthcheck'
+app.use('/healthcheck', healthCheckRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World");
@@ -71,3 +75,30 @@ server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   db();
 });
+
+
+
+
+// Graceful shutdown logic
+process.on("SIGINT", () => {
+  shutdown("SIGINT");
+});
+
+process.on("SIGTERM", () => {
+  shutdown("SIGTERM");
+});
+
+function shutdown(signal: string) {
+  console.log(`Received signal to terminate: ${signal}`);
+
+  // Close the Express server gracefully
+  server.close((err) => {
+    if (err) {
+      console.error("Error occurred during server shutdown:", err);
+      process.exit(1); // Exit with failure code
+    } else {
+      console.log("Express server closed");
+      process.exit(0); // Exit with success code
+    }
+  });
+}
