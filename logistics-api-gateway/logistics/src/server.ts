@@ -6,14 +6,15 @@ import https from "https";
 import fs from "fs";
 import bodyParser from "body-parser";
 import db from "./db";
-import userRouter from "./controller/user-controller";
-import cookieParser from "cookie-parser";
+import logisticRouter from "./controller/logistic-controller";
+import healthCheckRouter from "./healthcheck";
 
 dotenv.config();
 
 // Middleware function for checking custom header
 const checkCustomHeader = (req: Request, res: Response, next: NextFunction) => {
   const forwardedBy = req.headers["x-forwarded-by"];
+  console.log("Forwarded by: ", forwardedBy);
   if (forwardedBy !== "API-Gateway") {
     return res.status(403).json({
       code: 403,
@@ -28,14 +29,14 @@ const checkCustomHeader = (req: Request, res: Response, next: NextFunction) => {
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
-app.use(cookieParser());
+
+// Mount the health check router at '/healthcheck'
+app.use('/healthcheck', healthCheckRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World");
 });
-
-// Apply the check custom header middleware to the user route
-app.use("/user", checkCustomHeader, userRouter);
+app.use("/logistic", checkCustomHeader, logisticRouter);
 
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
@@ -70,7 +71,38 @@ if (isSSL) {
 }
 
 // Start server
-server.listen(PORT, () => {
+server.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);
-  db();
+  try {
+    await db();
+  } catch (error) {
+    console.log(`DB Error: ${error}`)
+  }
 });
+
+
+
+
+// Graceful shutdown logic
+process.on("SIGINT", () => {
+  shutdown("SIGINT");
+});
+
+process.on("SIGTERM", () => {
+  shutdown("SIGTERM");
+});
+
+function shutdown(signal: string) {
+  console.log(`Received signal to terminate: ${signal}`);
+
+  // Close the Express server gracefully
+  server.close((err) => {
+    if (err) {
+      console.error("Error occurred during server shutdown:", err);
+      process.exit(1); // Exit with failure code
+    } else {
+      console.log("Express server closed");
+      process.exit(0); // Exit with success code
+    }
+  });
+}

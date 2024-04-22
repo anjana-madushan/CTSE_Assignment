@@ -1,9 +1,17 @@
-import express, { Request, Response, NextFunction } from "express";
+import express from "express";
 import cors from "cors";
-import helmet from "helmet";
-import morgan from "morgan";
-import { createProxyMiddleware } from "http-proxy-middleware";
+import dotenv from "dotenv";
 import axios from "axios";
+import helmet from "helmet";
+import { createProxyMiddleware } from "http-proxy-middleware";
+import morgan from "morgan";
+
+// Load environment variables from .env file
+dotenv.config();
+const PORT = process.env.PORT || 5010;
+
+import healthCheckRouter from "./healthcheck";
+
 
 //TODO: @Pasan - If the hosting plan doesnt support https use certbot to get a free ssl certificate
 
@@ -27,6 +35,9 @@ app.use(helmet());
 app.use(morgan("combined"));
 app.disable("x-powered-by");
 app.use(addCustomHeader); // Apply the custom header middleware to the proxy
+
+// Mount the health check router at '/healthcheck'
+app.use('/healthcheck', healthCheckRouter);
 
 // Define rate limit constants
 //TODO @Pasan - Change the rate limit to based on hosting plan
@@ -189,10 +200,32 @@ app.use((_req, res) => {
   });
 });
 
-// Define port for Express server
-const PORT = process.env.PORT || 5010;
-
 // Start Express server
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Gateway is running on port ${PORT}`);
 });
+
+
+// Graceful shutdown logic
+process.on("SIGINT", () => {
+  shutdown("SIGINT");
+});
+
+process.on("SIGTERM", () => {
+  shutdown("SIGTERM");
+});
+
+function shutdown(signal: string) {
+  console.log(`Received signal to terminate: ${signal}`);
+
+  // Close the Express server gracefully
+  server.close((err) => {
+    if (err) {
+      console.error("Error occurred during server shutdown:", err);
+      process.exit(1); // Exit with failure code
+    } else {
+      console.log("Express server closed");
+      process.exit(0); // Exit with success code
+    }
+  });
+}
