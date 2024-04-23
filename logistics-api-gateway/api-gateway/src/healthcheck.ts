@@ -13,7 +13,7 @@ router.get("/", (_req: Request, res: Response) => {
   res.status(200).json({
     code: 200,
     status: "Success",
-    message: "Health check passed.",
+    message: "Health check passed succesfully.",
     upTime: upTime,
   });
 });

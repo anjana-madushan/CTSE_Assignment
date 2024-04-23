@@ -7,7 +7,7 @@ on:
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}                 
   ECR_REPOSITORY: ctse_assignment
-  ECS_SERVICE: new
+  ECS_SERVICE: ctse-api-gateway-service2
   ECS_CLUSTER: CTSE-assignment
   ECS_TASK_DEFINITION: logistics-api-gateway/api-gateway/ctse-task.json
 
