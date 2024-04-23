@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
-import { signUp, login, refreshToken, logout, checkToken } from '../service/user-service';
-import User from '../model/user-model';
+import { signUp, login, refreshToken, logout, checkToken } from '../src/service/user-service';
+import User from '../src/model/user-model';
 
 jest.mock('bcrypt');
 jest.mock('jsonwebtoken'); // Mock the jsonwebtoken module
