@@ -45,7 +45,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 // Load environment variables
-const PORT: number = parseInt(process.env.PORT!) || 3000;
+const PORT: number = parseInt(process.env.PORT!) || 5002;
 
 // Check if SSL is enabled
 const isSSL: boolean = process.env.SSL_ENABLED === "true";
