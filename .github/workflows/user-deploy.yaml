@@ -6,7 +6,7 @@ on:
 
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}                 
-  ECR_REPOSITORY: ${{  secrets.LOGISTICS_ECR_REPOSITORY  }}
+  ECR_REPOSITORY: ${{  secrets.USER_ECR_REPOSITORY  }}
   # ECS_SERVICE: ctse-logistics-service2
   # ECS_CLUSTER: CTSE-assignment
   # ECS_TASK_DEFINITION: logistics-api-gateway/logistics/ctse-task.json
