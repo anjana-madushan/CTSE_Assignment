@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: anjanamadushanctseassignment 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: anjanamadushanctseassignment
+  template:
+    metadata:
+      labels:
+        app: anjanamadushanctseassignment 
+    spec:
+      containers:
+        - name: anjanamadushanctseassignment 
+          image: sliitassign.azurecr.io/anjanamadushanctseassignment
+          ports:
+          - containerPort: 5001
