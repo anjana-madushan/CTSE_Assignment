@@ -1,4 +1,4 @@
-name: "devops-workflow"
+name: "logistics-deploy-workflow"
 
 on:
   push:
@@ -7,9 +7,9 @@ on:
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}                 
   ECR_REPOSITORY: ${{  secrets.LOGISTICS_ECR_REPOSITORY  }}
-  ECS_SERVICE: ctse-api-gateway-service2
+  ECS_SERVICE: ctse-logistics-service2
   ECS_CLUSTER: CTSE-assignment
-  ECS_TASK_DEFINITION: logistics-api-gateway/api-gateway/ctse-task.json
+  ECS_TASK_DEFINITION: logistics-api-gateway/logistics/ctse-task.json
 
   CONTAINER_NAME: api_gateway
 
@@ -47,18 +47,18 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-    # - name: Fill in the new image ID in the Amazon ECS task definition
-    #   id: task-def
-    #   uses: aws-actions/amazon-ecs-render-task-definition@v1
-    #   with:
-    #     task-definition: ${{ env.ECS_TASK_DEFINITION }}
-    #     container-name: ${{ env.CONTAINER_NAME }}
-    #     image: ${{ steps.build-image.outputs.image }}
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ${{ env.ECS_TASK_DEFINITION }}
+        container-name: ${{ env.CONTAINER_NAME }}
+        image: ${{ steps.build-image.outputs.image }}
 
-    # - name: Deploy Amazon ECS task definition
-    #   uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-    #   with:
-    #     task-definition: ${{ steps.task-def.outputs.task-definition }}
-    #     service: ${{ env.ECS_SERVICE }}
-    #     cluster: ${{ env.ECS_CLUSTER }}
-    #     wait-for-service-stability: true
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        service: ${{ env.ECS_SERVICE }}
+        cluster: ${{ env.ECS_CLUSTER }}
+        wait-for-service-stability: true

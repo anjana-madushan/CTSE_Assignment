@@ -1,4 +1,4 @@
-name: "devops-workflow"
+name: "gateway-deploy-workflow"
 
 on:
   push:
