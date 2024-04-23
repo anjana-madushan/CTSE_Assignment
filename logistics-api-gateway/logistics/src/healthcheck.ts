@@ -17,7 +17,7 @@ router.get("/", async (_req: Request, res: Response) => {
     res.status(200).json({
       code: 200,
       status: "Success",
-      message: "logitics Health check passed successflly.",
+      message: "logitics Health check passed successflly. check",
       upTime: upTime,
       data: {
         mongodb: "Connected"

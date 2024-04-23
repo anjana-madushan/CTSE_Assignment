@@ -17,7 +17,7 @@ router.get("/", async (_req: Request, res: Response) => {
     res.status(200).json({
       code: 200,
       status: "Success",
-      message: "Health check passed.",
+      message: "user Health check passed. check",
       upTime: upTime,
       data: {
         mongodb: "Connected"
