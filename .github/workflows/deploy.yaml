@@ -9,7 +9,7 @@ env:
   ECR_REPOSITORY: ctse_assignment
   ECS_SERVICE: new
   ECS_CLUSTER: CTSE-assignment
-  ECS_TASK_DEFINITION: app/ctse-task.json
+  ECS_TASK_DEFINITION: logistics-api-gateway/api-gateway/ctse-task.json
 
   CONTAINER_NAME: api_gateway
 
