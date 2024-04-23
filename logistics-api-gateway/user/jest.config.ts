@@ -6,7 +6,7 @@ module.exports = {
   testEnvironment: 'node',
   collectCoverage: false,
   collectCoverageFrom: [
-    "<rootDir>/server.ts"
+    "<rootDir>/src/server.ts"
   ],
   testMatch: [
     '**/__tests__/**/*.+(ts|tsx|js|jsx)',
