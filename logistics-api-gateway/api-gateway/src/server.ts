@@ -94,12 +94,12 @@ app.use(rateLimitAndTimeout);
 const services = [
   {
     route: "/user",
-    target: "ctse-user-balancer-824443805.eu-north-1.elb.amazonaws.com", //TODO @Pasan - Replace this base url  with the hosted one
+    target: "http://ctse-user-balancer-824443805.eu-north-1.elb.amazonaws.com/user", 
     header: "API-Gateway",
   },
   {
     route: "/logistics",
-    target: "ctse-logistics-balancer-1446288631.eu-north-1.elb.amazonaws.com", //TODO @Pasan - Replace this base url  with the hosted one
+    target: "http://ctse-logistics-balancer-1446288631.eu-north-1.elb.amazonaws.com/logistic", 
     header: "API-Gateway",
   },
 ];
@@ -114,7 +114,7 @@ export async function CheckAuth(req: any, res: any, next: any) {
     try {
       // Send API call to check the token
       const response = await axios.post(
-        "ctse-user-balancer-824443805.eu-north-1.elb.amazonaws.com/checkToken",
+        "http://ctse-user-balancer-824443805.eu-north-1.elb.amazonaws.com/user",
         {},
         {
           headers: {
