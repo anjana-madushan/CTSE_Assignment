@@ -12,7 +12,7 @@
   "author": "Nowen, Anjana, Pasan & Priyantha",
   "license": "ISC",
   "dependencies": {
-    "axios": "^1.6.8",
+    "axios": "^1.7.4",
     "bcrypt-ts": "^5.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
