@@ -1,5 +1,5 @@
 # Stage 1: Build and dependency installation
-FROM node:20.12.2-bullseye-slim as builder
+FROM node:20.17-bullseye-slim as builder
 
 # Install 'dumb-init'
 RUN apt-get update \
@@ -31,7 +31,7 @@ RUN chown -R node:node /app
 # ----------------------------------------------------------------------------------------------------
 
 # Stage 2: Setup production environment
-FROM node:20.12.2-bullseye-slim
+FROM node:20.17-bullseye-slim
 
 # Install 'dumb-init'
 RUN apt-get update \
